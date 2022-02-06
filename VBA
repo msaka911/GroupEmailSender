@@ -1,0 +1,49 @@
+Sub SendEmail()
+
+Dim Mail_Object, OutApp As Variant
+Dim strbody1 As String
+Dim strbody2 As String
+Dim strbody3 As String
+Dim strbody4 As String
+ With ActiveSheet
+    lastrow = .Cells(.Rows.Count, "B").End(xlUp).Row 'list of recipients (email address) - it takes as many addresses as B column contains
+    End With
+
+For i = 2 To lastrow
+
+Set Mail_Object = CreateObject("Outlook.Application")
+Set OutApp = Mail_Object.CreateItem(0)
+
+    With OutApp
+    .Subject = "Regarding Your E-claim CaseNo." & Cells(i, 2)
+     strbody1 = "<Body style=font-size:11pt;font-family:Calibri> Dear Client  " & Cells(i, 4) & "," & "<br>" _
+     & "We acknowledge received your claim documents." & "<br>" _
+     & "Your claim has been processed according to the policy wording. Please kindly find the attached Letter of Explanation of Benefit." & "<br>" _
+     & "The reimbursement will be sent to" & "<br>" & "<br>" _
+     & Cells(i, 3) & "." & "It usually takes two business days to issue e-transfer." & "<br>" & "<br>" _
+     & "Best Regards and Stay Safe," & "<br>" & "<br>" & "</Body>"
+     strbody2 = "<span style='color: navy; font: 13px arial, sans-serif;'><i><b>Michael Xiang" & "</span>" & "<b><i><br>"
+     strbody3 = "<span style='color: navy; font: 10px arial, sans-serif;'>Ontime Care Worldwide Inc." & "<br>" _
+     & "Richmond Hill, ON L4B 3H7" & "<br>" _
+     & "Tel:905-707-3355 " & "<br>" _
+     & "Fax: 905-707-1513" & "<br>" _
+     & "Website: www.jfgroup.ca" & "<br>" & "<br>" & "</span>"
+     strbody4 = "<span style='color: red; font: 9px arial, sans-serif;'>This message, including any attachments, is privileged and intended only for the person(s) named above. This material may contain confidential or personal information., which may be subject to the provisions of the Freedom of Information & Protection Act. Any other distribution, copying or disclosure is strictly prohibited. If you are the intended recipient or have received this message in error, please notify us immediately by telephone, fax or email, and permanently delete the original transmission from us, including any attachments, without making a copy." & "</span>"
+
+
+      
+    .To = Cells(i, 3).Value
+     strLocation = "C:\Users\Angela G.DESKTOP-A1O7G37\Desktop\" & Cells(i, 5) & ".pdf"
+     If Dir(strLocation) = vbNullString Then GoTo ErrMsg
+    .Attachments.Add (strLocation)
+    .htmlBody = strbody1 & strbody2 & strbody3 & strbody4
+    .display
+    '.send
+    End With
+
+Next i
+
+ErrMsg:
+MsgBox Cells(i, 5).Text
+
+End Sub
